@@ -1,12 +1,11 @@
 from kafka import KafkaProducer
 import json
 
-
 class MyKafka(object):
 
-    def __init__(self, kafka_brokers, json=False):
-        self.json = json
-        if not json:
+    def __init__(self, kafka_brokers, jsonSupport=False):
+        self.jsonSupport = jsonSupport
+        if not jsonSupport:
             self.producer = KafkaProducer(
                 bootstrap_servers=kafka_brokers
             )
@@ -17,10 +16,9 @@ class MyKafka(object):
             )
 
     def send(self, data, topic):
-        if self.json:
+        if self.jsonSupport:
             result = self.producer.send(topic, key=b'log', value=data)
         else:
             result = self.producer.send(topic, bytes(data, 'utf-8'))
         print("kafka send result: {}".format(result.get()))
-
-
+        
